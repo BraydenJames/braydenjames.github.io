@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weave - Interactive AI Ad-Libs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121214;
+            --surface-color: rgba(26, 26, 30, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --primary-cyan: #00E5FF;
+            --primary-blue: #3B82F6;
+            --primary-teal: #13EFB2;
+            --primary-orange: #FF9F1C;
+            --gradient-cool: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
+            --gradient-warm: linear-gradient(135deg, #FFE259, var(--primary-orange));
+            --font-display: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient glows */
+        .ambient-glow {
+            position: fixed;
+            width: 45vw;
+            height: 45vw;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-top-left {
+            top: -10vw;
+            left: -10vw;
+            background: radial-gradient(circle, var(--primary-cyan) 0%, transparent 80%);
+            animation: float 25s infinite alternate;
+        }
+
+        .glow-bottom-right {
+            bottom: -10vw;
+            right: -10vw;
+            background: radial-gradient(circle, var(--primary-orange) 0%, transparent 80%);
+            animation: float 30s infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(6vw, 6vw) scale(1.1); }
+        }
+
+        /* Layout wrapper */
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        /* Nav Header */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--gradient-cool);
+            padding: 1.5px;
+        }
+
+        .logo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 9px;
+            background-color: #121214;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: var(--primary-cyan);
+            font-size: 18px;
+        }
+
+        .logo-title h1 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: var(--gradient-cool);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-title p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .privacy-link-top {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: var(--surface-color);
+        }
+
+        .privacy-link-top:hover {
+            color: var(--text-primary);
+            border-color: var(--primary-cyan);
+        }
+
+        /* Hero Grid Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .hero-badge {
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background-color: rgba(19, 239, 178, 0.08);
+            border: 1px solid rgba(19, 239, 178, 0.2);
+            color: var(--primary-teal);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .hero-info h2 {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+        }
+
+        .hero-info h2 span {
+            background: var(--gradient-cool);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-info p {
+            color: var(--text-secondary);
+            font-size: 17px;
+            max-width: 520px;
+        }
+
+        .cta-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-playstore {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+        }
+
+        .btn-playstore:hover {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 4px 25px rgba(0, 229, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-playstore-text span {
+            display: block;
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .btn-playstore-text strong {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: var(--font-display);
+        }
+
+        /* Interactive Phone Frame Mockup */
+        .mockup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 320px;
+            height: 640px;
+            border: 8px solid #27272a;
+            border-radius: 36px;
+            background-color: #121214;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 229, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 18px;
+            background-color: #27272a;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        .phone-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px 16px;
+            position: relative;
+            background-color: #121214;
+        }
+
+        /* Interactive App States inside Mockup */
+        .mock-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .mock-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mock-header img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .mock-header h3 {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            letter-spacing: -0.5px;
+        }
+
+        .mock-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mock-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .mock-input {
+            width: 100%;
+            background-color: #18181b;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 13px;
+        }
+
+        .mock-input:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+        }
+
+        .mock-pill-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .mock-pill {
+            background-color: #222228;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mock-pill.active {
+            background-color: var(--primary-cyan);
+            color: #121214;
+            border-color: var(--primary-cyan);
+        }
+
+        .mock-btn-generate {
+            width: 100%;
+            height: 48px;
+            border-radius: 14px;
+            border: none;
+            background: var(--gradient-warm);
+            color: #121214;
+            font-weight: 800;
+            font-family: var(--font-display);
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: auto;
+            box-shadow: 0 4px 15px rgba(255, 159, 28, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mock-btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Mock Screen 2: Fill in Blanks */
+        .mock-blank-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .mock-blank-input {
+            width: 100%;
+            background-color: #18181b;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        /* Mock Screen 3: Story Reveal */
+        .mock-story-text {
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .mock-highlight {
+            background-color: rgba(0, 229, 255, 0.15);
+            color: var(--primary-cyan);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        /* Loading Animation inside Phone */
+        .mock-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 229, 255, 0.1);
+            border-left-color: var(--primary-cyan);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-cyan);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-color: rgba(0, 229, 255, 0.08);
+            color: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: bold;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 14.5px;
+        }
+
+        /* Footer Section */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--primary-cyan);
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            .hero-info h2 {
+                font-size: 38px;
+            }
+            .hero-badge {
+                align-self: center;
+            }
+            .cta-group {
+                justify-content: center;
+            }
+            footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Glow BG Elements -->
+    <div class="ambient-glow glow-top-left"></div>
+    <div class="ambient-glow glow-bottom-right"></div>
+
+    <div class="wrapper">
+        <!-- Header Bar -->
+        <nav>
+            <div class="logo-group">
+                <div class="logo">
+                    <div class="logo-inner">W</div>
+                </div>
+                <div class="logo-title">
+                    <h1>WEAVE</h1>
+                    <p>Interactive AI Ad-Libs</p>
+                </div>
+            </div>
+            <a href="privacy_policy.html" class="privacy-link-top">Privacy Policy</a>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-info">
+                <div class="hero-badge">🧬 Powered by Gemini AI</div>
+                <h2>Endless funny stories, <span>stitched by you.</span></h2>
+                <p>Weave is a premium, next-generation word-blank (Mad Libs style) generator app. Enter any wild theme you want, customize the tone, and let our generative model cook up a completely unique puzzle for you to complete.</p>
+                <div class="cta-group">
+                    <a href="#" class="btn-playstore">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="color: #3cc75a;"><path d="M5 3.25a.75.75 0 0 0-.75.75v16c0 .414.336.75.75.75h1.366a.75.75 0 0 0 .65-.375L18.423 12.5a.75.75 0 0 0 0-1l-11.407-7.875A.75.75 0 0 0 6.366 3.25H5z"/></svg>
+                        <div class="btn-playstore-text">
+                            <span>Get it on</span>
+                            <strong>Google Play</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interactive App Demo Mockup -->
+            <div class="mockup-container">
+                <div class="phone-frame">
+                    <div class="phone-notch"></div>
+                    <div class="phone-content" id="mockApp">
+                        
+                        <!-- State 1: Main Config Screen -->
+                        <div class="mock-screen" id="screenHome">
+                            <div class="mock-header">
+                                <div class="logo" style="width: 24px; height: 24px; border-radius: 6px;"><div class="logo-inner" style="font-size: 11px; border-radius: 5px;">W</div></div>
+                                <h3>WEAVE</h3>
+                            </div>
+                            
+                            <div class="mock-card">
+                                <div class="mock-label">SUBJECT OR THEME</div>
+                                <input type="text" class="mock-input" id="mockSubject" placeholder="e.g. Cats invading Mars..." value="A superhero cat stuck on Mars" onkeyup="checkMockInput()">
+                                <button class="mock-pill" style="align-self: flex-end; padding: 4px 8px; font-size: 10px;" onclick="randomizeMockSubject()">🎰 Randomize</button>
+                            </div>
+
+                            <div style="height: 12px;"></div>
+
+                            <div class="mock-card">
+                                <div class="mock-label">STORY TONE</div>
+                                <div class="mock-pill-grid">
+                                    <div class="mock-pill active" onclick="selectMockTone('Goofy', this)">Goofy</div>
+                                    <div class="mock-pill" onclick="selectMockTone('Sci-Fi', this)">Sci-Fi</div>
+                                    <div class="mock-pill" onclick="selectMockTone('Spooky', this)">Spooky</div>
+                                </div>
+                            </div>
+
+                            <button class="mock-btn-generate" id="mockBtnGenerate" onclick="generateMockStory()">WEAVE YOUR STORY</button>
+                        </div>
+
+                        <!-- State 2: Loading State -->
+                        <div class="mock-screen" id="screenLoading" style="display: none;">
+                            <div class="mock-loader">
+                                <div class="spinner"></div>
+                                <p style="font-size: 12px; font-family: var(--font-display); font-weight: 700; color: var(--primary-cyan);" id="mockLoaderText">SPINNING YOUR STORY...</p>
+                            </div>
+                        </div>
+
+                        <!-- State 3: Fill Blanks Screen -->
+                        <div class="mock-screen" id="screenBlanks" style="display: none;">
+                            <div class="mock-header">
+                                <h3>FILL IN THE BLANKS</h3>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex-grow: 1;" id="mockBlanksContainer">
+                                <!-- Generated inputs will render here -->
+                            </div>
+
+                            <button class="mock-btn-generate" style="background: var(--gradient-cool); margin-top: 10px;" onclick="revealMockStory()">REVEAL STORY</button>
+                        </div>
+
+                        <!-- State 4: Story Reveal Screen -->
+                        <div class="mock-screen" id="screenReveal" style="display: none;">
+                            <div class="mock-header">
+                                <h3 id="mockRevealTitle">STORY REVEALED</h3>
+                            </div>
+                            
+                            <div class="mock-card" style="flex-grow: 1; overflow-y: auto;">
+                                <p class="mock-story-text" id="mockRevealText"></p>
+                            </div>
+
+                            <button class="mock-btn-generate" onclick="resetMockApp()">PLAY AGAIN</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>Generative AI Templates</h3>
+                <p>No repetitive mad-libs. Every single story is created on-the-fly dynamically by Vertex AI or Gemini Nano to match your theme perfectly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3>100% Offline Generation</h3>
+                <p>Toggle Offline Mode to run Gemini Nano models locally. Generate hilarious puzzles on-device with zero data usage or cloud API latencies.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔊</div>
+                <h3>Text-to-Speech Narrator</h3>
+                <p>Listen as the app reads back your ridiculous story. Adjust voice speeds and pitch parameters to make the playback even funnier.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 Weave. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="privacy_policy.html">Privacy Policy</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripting for Interactive Mockup -->
+    <script>
+        let selectedTone = 'Goofy';
+        let currentBlanks = [];
+        let currentTemplate = '';
+        let storyTitle = '';
+
+        const mockSubjects = [
+            "A dinosaur DJ mixing techno beats",
+            "A secret agent hamster stealing a giant peanut",
+            "A clumsy wizard making radioactive espresso",
+            "A vampire dentist performing garlic root canals"
+        ];
+
+        const mockStories = {
+            'Goofy': {
+                title: "The Wild Mishap",
+                blanks: [
+                    { label: "Adjective (smelly/silly)", placeholder: "funny texture" },
+                    { label: "Noun (food/object)", placeholder: "food item" },
+                    { label: "Verb (ending in -ing)", placeholder: "funny action" }
+                ],
+                template: "I was having a very {0} day until I accidentally dropped my hot {1} on the floor. It started {2} across the room and hit the wall!"
+            },
+            'Sci-Fi': {
+                title: "Cybernetic Discovery",
+                blanks: [
+                    { label: "Adjective (glowing/robotic)", placeholder: "futuristic descriptor" },
+                    { label: "Noun (machine/gadget)", placeholder: "high-tech item" },
+                    { label: "Verb (base action)", placeholder: "weird task" }
+                ],
+                template: "The space explorer found a {0} artifact in the wreckage. She realized the {1} was designed to help astronauts {2} without gravity."
+            },
+            'Spooky': {
+                title: "The Haunted Manor",
+                blanks: [
+                    { label: "Adjective (scary/creepy)", placeholder: "spooky descriptor" },
+                    { label: "Noun (creature/monster)", placeholder: "spooky creature" },
+                    { label: "Verb (past tense)", placeholder: "reaction action" }
+                ],
+                template: "I entered the dark room and saw a extremely {0} silhouette. Suddenly, a wild {1} appeared out of the shadows and I {2} as fast as I could!"
+            }
+        };
+
+        function selectMockTone(tone, element) {
+            selectedTone = tone;
+            const pills = element.parentElement.querySelectorAll('.mock-pill');
+            pills.forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function checkMockInput() {
+            const val = document.getElementById('mockSubject').value;
+            document.getElementById('mockBtnGenerate').disabled = val.trim().length === 0;
+        }
+
+        function randomizeMockSubject() {
+            const subjectInput = document.getElementById('mockSubject');
+            subjectInput.value = mockSubjects[Math.floor(Math.random() * mockSubjects.length)];
+            checkMockInput();
+        }
+
+        function generateMockStory() {
+            document.getElementById('screenHome').style.display = 'none';
+            document.getElementById('screenLoading').style.display = 'flex';
+            
+            // Cycle loading messages
+            const messages = [
+                "SPINNING YOUR STORY...",
+                "THREADING CRITICAL ADJECTIVES...",
+                "GLUEING NOUNS..."
+            ];
+            let msgIdx = 0;
+            const loadInterval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % messages.length;
+                document.getElementById('mockLoaderText').innerText = messages[msgIdx];
+            }, 800);
+
+            setTimeout(() => {
+                clearInterval(loadInterval);
+                document.getElementById('screenLoading').style.display = 'none';
+                document.getElementById('screenBlanks').style.display = 'flex';
+                
+                // Load blanks
+                const storyData = mockStories[selectedTone];
+                currentBlanks = storyData.blanks;
+                currentTemplate = storyData.template;
+                storyTitle = storyData.title + " (Demo)";
+
+                const container = document.getElementById('mockBlanksContainer');
+                container.innerHTML = '';
+                currentBlanks.forEach((blank, idx) => {
+                    container.innerHTML += `
+                        <div class="mock-blank-item">
+                            <div class="mock-label" style="font-size: 10px;">${blank.label.toUpperCase()}</div>
+                            <input type="text" class="mock-blank-input" id="blank_${idx}" placeholder="${blank.placeholder}">
+                        </div>
+                    `;
+                });
+            }, 2000);
+        }
+
+        function revealMockStory() {
+            document.getElementById('screenBlanks').style.display = 'none';
+            document.getElementById('screenReveal').style.display = 'flex';
+
+            document.getElementById('mockRevealTitle').innerText = storyTitle.toUpperCase();
+
+            // Replace template blanks
+            let completedStory = currentTemplate;
+            currentBlanks.forEach((_, idx) => {
+                const val = document.getElementById(`blank_${idx}`).value || `[missing word]`;
+                completedStory = completedStory.replace(`{${idx}}`, `<span class="mock-highlight">${val}</span>`);
+            });
+
+            document.getElementById('mockRevealText').innerHTML = completedStory;
+        }
+
+        function resetMockApp() {
+            document.getElementById('screenReveal').style.display = 'none';
+            document.getElementById('screenHome').style.display = 'flex';
+            document.getElementById('mockSubject').value = 'A superhero cat stuck on Mars';
+            checkMockInput();
+        }
+    </script>
+</body>
+</html>
