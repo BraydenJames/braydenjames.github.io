@@ -22,20 +22,11 @@
             --gradient-spectrum: linear-gradient(90deg, var(--primary-cyan), var(--primary-teal), var(--primary-orange));
             --font-display: 'Montserrat', sans-serif;
             --font-body: 'Inter', sans-serif;
+            --logo-bg: #121214;
+            --logo-border: rgba(255, 255, 255, 0.05);
         }
 
-        .light-theme {
-            --bg-color: #F8FAFC;
-            --surface-color: rgba(255, 255, 255, 0.85);
-            --border-color: rgba(15, 23, 42, 0.08);
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
-            --primary-cyan: #0284C7;
-            --primary-blue: #1D4ED8;
-            --primary-teal: #0D9488;
-            --primary-orange: #C2410C;
-            --gradient-cool: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
-        }
+
 
         * {
             box-sizing: border-box;
@@ -49,46 +40,15 @@
             font-family: var(--font-body);
             line-height: 1.6;
             overflow-x: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
-        /* Animated Ambient Background Glows */
-        .ambient-glow {
-            position: fixed;
-            width: 50vw;
-            height: 50vw;
-            border-radius: 50%;
-            filter: blur(140px);
-            opacity: 0.12;
-            z-index: -1;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
 
-        .glow-1 {
-            top: -10vw;
-            left: -10vw;
-            background: radial-gradient(circle, var(--primary-cyan) 0%, transparent 80%);
-            animation: float-slow 20s infinite alternate;
-        }
-
-        .glow-2 {
-            bottom: -10vw;
-            right: -10vw;
-            background: radial-gradient(circle, var(--primary-orange) 0%, transparent 80%);
-            animation: float-slow 25s infinite alternate-reverse;
-        }
-
-        @keyframes float-slow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5vw, 5vw) scale(1.1); }
-        }
 
         /* Layout Container */
         .page-wrapper {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 40px;
@@ -100,44 +60,54 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 24px;
+            padding-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .app-logo {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
             background: var(--gradient-cool);
-            padding: 2px;
-            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.25);
+            padding: 1.5px;
+            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.15);
         }
 
         .app-logo-inner {
             width: 100%;
             height: 100%;
-            border-radius: 10px;
-            background-color: #121214;
+            border-radius: 9px;
+            background-color: var(--logo-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: var(--font-display);
             font-weight: 800;
-            font-size: 20px;
+            font-size: 18px;
             color: var(--primary-cyan);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--logo-border);
+        }
+
+        .app-logo-link {
+            text-decoration: none;
+            display: block;
+            transition: transform 0.2s ease;
+        }
+
+        .app-logo-link:hover {
+            transform: scale(1.05);
         }
 
         .title-group h1 {
             font-family: var(--font-display);
+            font-size: 22px;
             font-weight: 700;
-            font-size: 26px;
             letter-spacing: -0.5px;
             background: var(--gradient-cool);
             -webkit-background-clip: text;
@@ -145,9 +115,11 @@
         }
 
         .title-group p {
-            font-size: 14px;
+            font-size: 11px;
             color: var(--text-secondary);
-            font-weight: 500;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .header-controls {
@@ -156,7 +128,7 @@
             gap: 12px;
         }
 
-        button.btn-ctrl {
+        .btn-ctrl {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
@@ -167,15 +139,18 @@
             font-weight: 500;
             font-family: var(--font-body);
             transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
+            line-height: 1;
         }
 
-        button.btn-ctrl:hover {
+        .btn-ctrl:hover {
             border-color: var(--primary-cyan);
             box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
             transform: translateY(-1px);
+            color: var(--text-primary);
         }
 
         /* Search Bar */
@@ -457,26 +432,26 @@
 </head>
 <body>
 
-    <!-- Ambient Gradient Background Elements -->
-    <div class="ambient-glow glow-1" id="glow1"></div>
-    <div class="ambient-glow glow-2" id="glow2"></div>
+
 
     <div class="page-wrapper">
         <header>
             <div class="logo-section">
-                <div class="app-logo">
-                    <div class="app-logo-inner">W</div>
-                </div>
+                <a href="index.html" class="app-logo-link">
+                    <div class="app-logo">
+                        <div class="app-logo-inner">W</div>
+                    </div>
+                </a>
                 <div class="title-group">
                     <h1>WEAVE PRIVACY POLICY</h1>
                     <p>Last updated: June 13, 2026</p>
                 </div>
             </div>
             <div class="header-controls">
-                <button class="btn-ctrl" onclick="toggleTheme()" id="themeBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                    Theme Mode
-                </button>
+                <a href="index.html" class="btn-ctrl">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Home
+                </a>
                 <button class="btn-ctrl" onclick="window.print()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
                     Print PDF
@@ -487,7 +462,7 @@
         <!-- Dynamic Filter Search -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" id="searchBar" placeholder="Search privacy topics (e.g. data security, Gemini Nano, prompts)..." onkeyup="filterSections()">
+            <input type="text" class="search-input" id="searchBar" placeholder="Search privacy topics (e.g. data security, data sharing, prompts)..." onkeyup="filterSections()">
         </div>
 
         <div class="main-content">
@@ -498,11 +473,13 @@
                     <li><a href="#overview" class="sidebar-link active" onclick="activateLink(this)">Overview</a></li>
                     <li><a href="#no-personal-data" class="sidebar-link" onclick="activateLink(this)">Personal Information</a></li>
                     <li><a href="#prompts-storage" class="sidebar-link" onclick="activateLink(this)">AI Prompt Storage</a></li>
-                    <li><a href="#on-device" class="sidebar-link" onclick="activateLink(this)">On-Device AI Privacy</a></li>
                     <li><a href="#google-play" class="sidebar-link" onclick="activateLink(this)">Google Play Telemetry</a></li>
                     <li><a href="#sharing" class="sidebar-link" onclick="activateLink(this)">Data Third-Parties</a></li>
                     <li><a href="#security" class="sidebar-link" onclick="activateLink(this)">Data Security</a></li>
-                    <li><a href="#contact" class="sidebar-link" onclick="activateLink(this)">Contact &amp; Rights</a></li>
+                    <li><a href="#children" class="sidebar-link" onclick="activateLink(this)">Children's Privacy</a></li>
+                    <li><a href="#regional-rights" class="sidebar-link" onclick="activateLink(this)">Regional Rights</a></li>
+                    <li><a href="#policy-changes" class="sidebar-link" onclick="activateLink(this)">Policy Changes</a></li>
+                    <li><a href="#contact" class="sidebar-link" onclick="activateLink(this)">Contact Us</a></li>
                 </ul>
             </aside>
 
@@ -519,13 +496,9 @@
                             <h3>No Accounts</h3>
                             <p>Weave requires no registrations, user profiles, or logins. Your identity remains anonymous to us.</p>
                         </div>
-                        <div class="infobox accent-teal">
-                            <h3>Local Processing</h3>
-                            <p>On compatible devices, stories can be generated 100% locally on-device using Gemini Nano.</p>
-                        </div>
                         <div class="infobox accent-orange">
-                            <h3>No Hidden Tracking</h3>
-                            <p>We do not track your location, read contacts, or embed covert advertising sdk trackers.</p>
+                            <h3>Ad Telemetry</h3>
+                            <p>We use Google AdMob to serve rewarded ads. Ad metrics and diagnostics are handled by Google.</p>
                         </div>
                     </div>
                 </section>
@@ -553,20 +526,9 @@
                     <p>We do not associate these prompts with any user identity, as we have no user databases or registration systems.</p>
                 </section>
 
-                <!-- On-Device AI Privacy Section -->
-                <section class="doc-section" id="on-device">
-                    <h2><span class="section-icon">4</span>On-Device AI Privacy (Gemini Nano)</h2>
-                    <p>If you toggle on <strong>Offline Mode (Gemini Nano)</strong>, the App routes prompt calculations locally on your physical device using Android's system-level <strong>AICore</strong> services.</p>
-                    <ul>
-                        <li>Your prompt parameters (theme text and tone selection) do not leave your device.</li>
-                        <li>All story rendering and blank-filling occurs 100% locally in secure sandbox device memory.</li>
-                        <li>Google Play Services manages the background installation of the Gemini Nano model file via Private Compute Services, keeping calculations localized.</li>
-                    </ul>
-                </section>
-
                 <!-- Google Play Telemetry Section -->
                 <section class="doc-section" id="google-play">
-                    <h2><span class="section-icon">5</span>Google Play Console Telemetry</h2>
+                    <h2><span class="section-icon">4</span>Google Play Console Telemetry</h2>
                     <p>Weave uses standard, platform-level telemetry provided automatically by the Google Play Store console when distributing the application.</p>
                     <p><strong>What Google Play Console tracks automatically:</strong></p>
                     <ul>
@@ -579,25 +541,49 @@
 
                 <!-- Sharing Section -->
                 <section class="doc-section" id="sharing">
-                    <h2><span class="section-icon">6</span>Data Sharing with Third-Parties</h2>
-                    <p>We do not sell, rent, trade, or distribute your data. Prompt data is sent exclusively to the cloud infrastructure services required to generate stories:</p>
+                    <h2><span class="section-icon">5</span>Data Sharing with Third-Parties</h2>
+                    <p>We do not sell, rent, trade, or distribute your data. Usage parameters and diagnostic information are processed by the following services to run the App's features:</p>
                     <ul>
                         <li><strong>Firebase / Google Cloud Platform (GCP):</strong> Hosts the cloud-based generative AI systems used when Cloud Mode is selected. Data transmission is encrypted and processed according to Google Cloud privacy standards.</li>
-                        <li><strong>Google Android OS / AICore:</strong> Manages localized processing resources on-device.</li>
+                        <li><strong>Google AdMob:</strong> Serves rewarded video ads to enable story generation. AdMob collects device identifiers, general location estimates, and ad engagement statistics for personalization, diagnostic reporting, and analytics in accordance with Google's Privacy Policy.</li>
                     </ul>
                 </section>
 
                 <!-- Security Section -->
                 <section class="doc-section" id="security">
-                    <h2><span class="section-icon">7</span>Data Security</h2>
+                    <h2><span class="section-icon">6</span>Data Security</h2>
                     <p>All communication between the App and the cloud servers (when using online generation modes) is secured using standard **HTTPS/TLS encryption** protocols. This ensures your prompt entries cannot be intercepted by third-parties during transit.</p>
+                </section>
+
+                <!-- Children's Privacy Section -->
+                <section class="doc-section" id="children">
+                    <h2><span class="section-icon">7</span>Children's Privacy</h2>
+                    <p>Our App is not directed to children under the age of 13 (or 16 in certain European jurisdictions). We do not knowingly collect or request personal information from children.</p>
+                    <p>If you are a parent or guardian and believe that your child has provided us with personal data, please contact us immediately. If we become aware that we have collected personal data from a child without verification of parental consent, we will take steps to delete that data from our server logs.</p>
+                </section>
+
+                <!-- Regional Rights Section -->
+                <section class="doc-section" id="regional-rights">
+                    <h2><span class="section-icon">8</span>Regional Rights (GDPR / CCPA)</h2>
+                    <p>Depending on your location (such as the European Union under GDPR or California under CCPA), you may possess specific rights regarding your personal data:</p>
+                    <ul>
+                        <li><strong>Right of Access &amp; Deletion:</strong> You have the right to request access to or deletion of your personal data.</li>
+                        <li><strong>Data Portability:</strong> You have the right to request a copy of the data we process.</li>
+                    </ul>
+                    <p>However, because Weave operates in a <strong>data-minimized environment</strong> with no user accounts, profile indices, or tracking identifiers, we do not possess any records that can identify individual users. Consequently, we cannot retrieve, modify, or delete data upon request, as we have no technical means to verify which data (if any) corresponds to your device.</p>
+                </section>
+
+                <!-- Policy Changes Section -->
+                <section class="doc-section" id="policy-changes">
+                    <h2><span class="section-icon">9</span>Changes to This Privacy Policy</h2>
+                    <p>We may update our privacy policy from time to time. We will notify you of any changes by posting the new privacy policy on this page and updating the "Last updated" date at the top of the policy.</p>
+                    <p>You are advised to review this privacy policy periodically for any changes. Changes to this privacy policy are effective when they are posted on this page.</p>
                 </section>
 
                 <!-- Contact Section -->
                 <section class="doc-section" id="contact">
-                    <h2><span class="section-icon">8</span>Contact &amp; Your Rights</h2>
-                    <p>Since we do not compile user accounts, profile indices, or personal identifiers, we hold no records capable of identifying individual users. Consequently, we cannot search for, modify, or delete specific user data upon request, as no such records exist.</p>
-                    <p>For any questions regarding our data policies or app configurations, you can contact the developer team at:</p>
+                    <h2><span class="section-icon">10</span>Contact Us</h2>
+                    <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:</p>
                     <ul>
                         <li><strong>Email:</strong> brayden.reesor@gmail.com</li>
                     </ul>
@@ -610,27 +596,7 @@
             <p>&copy; 2026 Weave. All rights reserved.</p>
         </footer>
     </div>
-
     <script>
-        // Smooth theme toggling
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            const themeBtn = document.getElementById('themeBtn');
-            
-            if (isLight) {
-                themeBtn.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    Dark Theme
-                `;
-            } else {
-                themeBtn.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                    Theme Mode
-                `;
-            }
-        }
-
         // Active state navigation scrolling
         function activateLink(element) {
             const links = document.querySelectorAll('.sidebar-link');
